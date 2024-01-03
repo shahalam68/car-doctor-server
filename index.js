@@ -33,6 +33,7 @@ async function run() {
     await client.connect();
 
     const serviceCollection = client.db('cardoctor').collection('services');
+    const bookingCollection = client.db('cardoctor').collection('booking')
 
     app.get('/services', async(req, res) => {
       const cursor = serviceCollection.find();
@@ -45,10 +46,19 @@ async function run() {
       const options = {
         
         // Include only the `title` and `imdb` fields in the returned document
-        projection: {  title: 1, price: 1, service_id : 1,   },
+        projection: {  title: 1, price: 1, service_id : 1, img: 1   },
       };
       const result = await serviceCollection.findOne(query,options);
       res.send(result)
+    })
+
+
+    //bookings
+    app.post('/checkout', async(req,res) => {
+      const booking = req.body;
+      console.log(booking);
+      const result = await bookingCollection.insertOne(booking);
+      res.send(result);
     })
 
 
